@@ -6,75 +6,75 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
-const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL;
+const SIDE_RPC_URL = process.env.SIDE_RPC_URL;
+const UZHETH_RPC_URL = process.env.UZHETH_RPC_URL;
 
-const SEPOLIA_PRIVATE_KEY = process.env.SEPOLIA_PRIVATE_KEY;
-const MUMBAI_PRIVATE_KEY = process.env.MUMBAI_PRIVATE_KEY;
+const SIDE_PRIVATE_KEY = process.env.SIDE_PRIVATE_KEY;
+const UZHETH_PRIVATE_KEY = process.env.UZHETH_PRIVATE_KEY;
 
 async function main() {
   const deployedContracts = readFileSync("deployed-contracts.json", "utf8");
   const deployedContractsJson = JSON.parse(deployedContracts);
 
-  const bridgePoolAddressSepolia =
-    deployedContractsJson["sepolia"]["bridgePool"];
-  const bridgePoolAddressMumbai = deployedContractsJson["mumbai"]["bridgePool"];
+  const bridgePoolAddressSIDE =
+    deployedContractsJson["SIDE"]["bridgePool"];
+  const bridgePoolAddressUZHETH = deployedContractsJson["UZHETH"]["bridgePool"];
 
-  const bridgeTokenAddressSepolia =
-    deployedContractsJson["sepolia"]["bridgeToken"];
-  const bridgeTokenAddressMumbai =
-    deployedContractsJson["mumbai"]["bridgeToken"];
+  const bridgeTokenAddressSIDE =
+    deployedContractsJson["SIDE"]["bridgeToken"];
+  const bridgeTokenAddressUZHETH =
+    deployedContractsJson["UZHETH"]["bridgeToken"];
 
-  let httpProviderSepolia = new ethers.providers.JsonRpcProvider(
-    SEPOLIA_RPC_URL
+  let httpProviderSIDE = new ethers.providers.JsonRpcProvider(
+    SIDE_RPC_URL
   );
-  let walletSepolia = new ethers.Wallet(
-    SEPOLIA_PRIVATE_KEY!,
-    httpProviderSepolia
+  let walletSIDE = new ethers.Wallet(
+    SIDE_PRIVATE_KEY!,
+    httpProviderSIDE
   );
-  let httpProviderMumbai = new ethers.providers.JsonRpcProvider(MUMBAI_RPC_URL);
-  let walletMumbai = new ethers.Wallet(MUMBAI_PRIVATE_KEY!, httpProviderMumbai);
+  let httpProviderUZHETH = new ethers.providers.JsonRpcProvider(UZHETH_RPC_URL);
+  let walletUZHETH = new ethers.Wallet(UZHETH_PRIVATE_KEY!, httpProviderUZHETH);
 
-  const bridgeTokenSepolia = new ethers.Contract(
-    bridgeTokenAddressSepolia,
+  const bridgeTokenSIDE = new ethers.Contract(
+    bridgeTokenAddressSIDE,
     BridgeTokenABI,
-    httpProviderSepolia
+    httpProviderSIDE
   );
-  const bridgePoolSepolia = new ethers.Contract(
-    bridgePoolAddressSepolia,
+  const bridgePoolSIDE = new ethers.Contract(
+    bridgePoolAddressSIDE,
     BridgePoolABI,
-    httpProviderSepolia
+    httpProviderSIDE
   );
-  const bridgeTokenMumbai = new ethers.Contract(
-    bridgeTokenAddressMumbai,
+  const bridgeTokenUZHETH = new ethers.Contract(
+    bridgeTokenAddressUZHETH,
     BridgeTokenABI,
-    httpProviderMumbai
+    httpProviderUZHETH
   );
-  const bridgeContractMumbai = new ethers.Contract(
-    bridgePoolAddressMumbai,
+  const bridgeContractUZHETH = new ethers.Contract(
+    bridgePoolAddressUZHETH,
     BridgePoolABI,
-    httpProviderMumbai
+    httpProviderUZHETH
   );
 
-  const approveSepoliaTx = await bridgeTokenSepolia
-    .connect(walletSepolia)
-    .approve(bridgePoolSepolia.address, ethers.utils.parseEther("10"));
-  await approveSepoliaTx.wait();
+  const approveSIDETx = await bridgeTokenSIDE
+    .connect(walletSIDE)
+    .approve(bridgePoolSIDE.address, ethers.utils.parseEther("10"));
+  await approveSIDETx.wait();
 
-  const stakeSepoliaTx = await bridgePoolSepolia
-    .connect(walletSepolia)
+  const stakeSIDETx = await bridgePoolSIDE
+    .connect(walletSIDE)
     .stake(ethers.utils.parseEther("10"));
-  await stakeSepoliaTx.wait();
+  await stakeSIDETx.wait();
 
-  const approveMumbaiTx = await bridgeTokenMumbai
-    .connect(walletMumbai)
-    .approve(bridgeContractMumbai.address, ethers.utils.parseEther("10"));
-  await approveMumbaiTx.wait();
+  const approveUZHETHTx = await bridgeTokenUZHETH
+    .connect(walletUZHETH)
+    .approve(bridgeContractUZHETH.address, ethers.utils.parseEther("10"));
+  await approveUZHETHTx.wait();
 
-  const stakeMumbaiTx = await bridgeContractMumbai
-    .connect(walletMumbai)
+  const stakeUZHETHTx = await bridgeContractUZHETH
+    .connect(walletUZHETH)
     .stake(ethers.utils.parseEther("10"));
-  await stakeMumbaiTx.wait();
+  await stakeUZHETHTx.wait();
 }
 
 main().catch((error) => {

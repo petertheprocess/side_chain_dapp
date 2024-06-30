@@ -1,6 +1,6 @@
 # Introduction
 
-This repository contains *BridgeToken* and *BridgePool* smart contracts. Both smart contract should be deployed to Sepolia and Mumbai chains. This repository also contains script that should be executed by node. Project represents bridge (not production ready) between this two chains. After initial mint of token inside deployment transaction, token can not be minted nor burned anymore. When user wants to bridge tokens from origin to destination chain, tokens will be transfered to *BridgePool* smart contract on origin chain and will be transfered from *BridgePool* contract on destination chain to receiving address. Bridging is done by node. To become node one must stake *BridgeToken* on *BridgePool* contract.
+This repository contains *BridgeToken* and *BridgePool* smart contracts. Both smart contract should be deployed to SIDE and UZHETH chains. This repository also contains script that should be executed by node. Project represents bridge (not production ready) between this two chains. After initial mint of token inside deployment transaction, token can not be minted nor burned anymore. When user wants to bridge tokens from origin to destination chain, tokens will be transfered to *BridgePool* smart contract on origin chain and will be transfered from *BridgePool* contract on destination chain to receiving address. Bridging is done by node. To become node one must stake *BridgeToken* on *BridgePool* contract.
 
 ## BridgeToken
 
@@ -52,18 +52,18 @@ npm install
 * Set the following variables:
 
 ```makefile
-SEPOLIA_RPC_URL=<Sepolia RPC URL>
-MUMBAI_RPC_URL=<Mumbai RPC URL>
-SEPOLIA_PRIVATE_KEY=<Sepolia private key>
-MUMBAI_PRIVATE_KEY=<Mumbai private key>
+SIDE_RPC_URL=<SIDE RPC URL>
+UZHETH_RPC_URL=<UZHETH RPC URL>
+SIDE_PRIVATE_KEY=<SIDE private key>
+UZHETH_PRIVATE_KEY=<UZHETH private key>
 ```
 
 4. Deploy the contracts<br>
 * Change constructor parameters in line 12 in *deploy.ts*.
 
 ```bash
-npx hardhat run scripts/deploy.js --network sepolia
-npx hardhat run scripts/deploy.js --network mumbai
+npx hardhat run scripts/deploy.js --network SIDE
+npx hardhat run scripts/deploy.js --network UZHETH
 ```
 
 5. Run the scripts

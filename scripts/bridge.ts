@@ -5,66 +5,66 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
-const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL;
+const SIDE_RPC_URL = process.env.SIDE_RPC_URL;
+const UZHETH_RPC_URL = process.env.UZHETH_RPC_URL;
 
-const SEPOLIA_PRIVATE_KEY = process.env.SEPOLIA_PRIVATE_KEY;
-const MUMBAI_PRIVATE_KEY = process.env.MUMBAI_PRIVATE_KEY;
+const SIDE_PRIVATE_KEY = process.env.SIDE_PRIVATE_KEY;
+const UZHETH_PRIVATE_KEY = process.env.UZHETH_PRIVATE_KEY;
 
 async function main() {
   const deployedContracts = readFileSync("deployed-contracts.json", "utf8");
   const deployedContractsJson = JSON.parse(deployedContracts);
 
-  const bridgePoolAddressSepolia =
-    deployedContractsJson["sepolia"]["bridgePool"];
-  const bridgePoolAddressMumbai = deployedContractsJson["mumbai"]["bridgePool"];
+  const bridgePoolAddressSIDE =
+    deployedContractsJson["SIDE"]["bridgePool"];
+  const bridgePoolAddressUZHETH = deployedContractsJson["UZHETH"]["bridgePool"];
 
-  let httpProviderSepolia = new ethers.providers.JsonRpcProvider(
-    SEPOLIA_RPC_URL
+  let httpProviderSIDE = new ethers.providers.JsonRpcProvider(
+    SIDE_RPC_URL
   );
 
-  let walletSepolia = new ethers.Wallet(
-    SEPOLIA_PRIVATE_KEY!,
-    httpProviderSepolia
+  let walletSIDE = new ethers.Wallet(
+    SIDE_PRIVATE_KEY!,
+    httpProviderSIDE
   );
 
-  const bridgePoolSepolia = new ethers.Contract(
-    bridgePoolAddressSepolia,
+  const bridgePoolSIDE = new ethers.Contract(
+    bridgePoolAddressSIDE,
     BridgePoolABI,
-    httpProviderSepolia
+    httpProviderSIDE
   );
 
-  let httpProviderMumbai = new ethers.providers.JsonRpcProvider(MUMBAI_RPC_URL);
-  let walletMumbai = new ethers.Wallet(MUMBAI_PRIVATE_KEY!, httpProviderMumbai);
+  let httpProviderUZHETH = new ethers.providers.JsonRpcProvider(UZHETH_RPC_URL);
+  let walletUZHETH = new ethers.Wallet(UZHETH_PRIVATE_KEY!, httpProviderUZHETH);
 
-  const bridgePoolMumbai = new ethers.Contract(
-    bridgePoolAddressMumbai,
+  const bridgePoolUZHETH = new ethers.Contract(
+    bridgePoolAddressUZHETH,
     BridgePoolABI,
-    httpProviderMumbai
+    httpProviderUZHETH
   );
 
-  bridgePoolSepolia.on("Deposit", (depostID, sender, receiver, amount) => {
-    console.log("Deposit event triggered on Sepolia blockchain");
+  bridgePoolSIDE.on("Deposit", (depostID, sender, receiver, amount) => {
+    console.log("Deposit event triggered on SIDE blockchain");
 
-    bridgePoolMumbai
-      .connect(walletMumbai)
+    bridgePoolUZHETH
+      .connect(walletUZHETH)
       .executeBridge(depostID, receiver, amount, { gasLimit: 1000000 });
   });
 
-  bridgePoolMumbai.on("Deposit", (depostID, sender, receiver, amount) => {
-    console.log("Deposit event triggered on Mumbai blockchain");
+  bridgePoolUZHETH.on("Deposit", (depostID, sender, receiver, amount) => {
+    console.log("Deposit event triggered on UZHETH blockchain");
 
-    bridgePoolSepolia
-      .connect(walletSepolia)
+    bridgePoolSIDE
+      .connect(walletSIDE)
       .executeBridge(depostID, receiver, amount, { gasLimit: 1000000 });
   });
 
-  bridgePoolSepolia.on("ExecuteBridge", () => {
-    console.log("ExecuteBridge event triggered on Sepolia blockchain");
+  bridgePoolSIDE.on("ExecuteBridge", () => {
+    console.log("ExecuteBridge event triggered on SIDE blockchain");
   });
 
-  bridgePoolMumbai.on("ExecuteBridge", () => {
-    console.log("ExecuteBridge event triggered on Mumbai blockchain");
+  bridgePoolUZHETH.on("ExecuteBridge", () => {
+    console.log("ExecuteBridge event triggered on UZHETH blockchain");
   });
 }
 
