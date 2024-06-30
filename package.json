@@ -7,5 +7,9 @@
     "ethereum-waffle": "^4.0.10",
     "fs": "^0.0.1-security",
     "hardhat": "^2.14.0"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

@@ -56,6 +56,7 @@ contract BridgePool {
     }
 
     function deposit(uint256 amount, address receiver) external {
+        // ammount is in wei
         token.safeTransferFrom(msg.sender, address(this), amount);
 
         lastDepositID++;
