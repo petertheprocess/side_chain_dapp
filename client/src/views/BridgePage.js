@@ -179,6 +179,9 @@ const getChainName = (chainId) => {
 }
 
 const BridgePage = () => {
+    // ask user to connect to metamask
+    // once connected, show the bridge form
+    window.ethereum.request({ method: "eth_requestAccounts" });
     return (
         <MetaMaskProvider
             sdkOptions={{
@@ -186,7 +189,6 @@ const BridgePage = () => {
                     name: "Bridge",
                     url: window.location.href,
                 },
-                infuraAPIKey: "0d1e7f7b6b4b4c9f8f8f8f8f8f8f8f8f",
             }}>
             <Bridge />
         </MetaMaskProvider>

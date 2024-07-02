@@ -2,6 +2,7 @@ node_modules
 typechain-types
 artifacts
 cache
+token_holders.json
 
 .env
 !client/.env
