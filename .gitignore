@@ -4,6 +4,7 @@ artifacts
 cache
 
 .env
+!client/.env
 
 deployed-contracts.json
 ```

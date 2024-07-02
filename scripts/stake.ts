@@ -14,7 +14,7 @@ type TokenHolder = {
   privateKey: string;
 };
 
-const stakeAmount = "10000";
+const stakeAmount = "1000";
 
 async function main() {
   const deployedContracts = readFileSync("deployed-contracts.json", "utf8");
