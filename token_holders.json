@@ -1,9 +1,18 @@
-{
-    "SIDE": [
-        "0x391ABF65aE48F2A3dc358eBf925B84a02aac7a17"
-    ],
-    "UZHETH": [
-        "0x39A9C8B6E6DCd15F3982fE4f24a434BFcd4B6931",
-        "0x8B5DAEb1a990698B4FDDe1937F2156F002b2a562"
-    ]
-}
+[
+    {
+        "address": "0x39A9C8B6E6DCd15F3982fE4f24a434BFcd4B6931",
+        "privateKey": "0xfa21b17fbef94e9d408290b39ed3c4b759a4fbd019d9cf3b23ee792c939f2246"
+    },
+    {
+        "address": "0x692e1d32899fda3CBa368FC7C029A74A9aA921E8",
+        "privateKey": "0x253bbcbc623352c1dd8a99bf2568df82e073833e2446413927d787113ca6453c"
+    },
+    {
+        "address": "0x4a60b912c87f33d61A72B5824AbEB7F14158b789",
+        "privateKey": "0x1acf62ac2be733d8cda27eb1b52fcf16b4ff47574b44a8874c433c27b1fd2445"
+    },
+    {
+        "address": "0xB3bEaa443525857Bfb9DB9e62d528b96859EF6B1",
+        "privateKey": "d591809fa39c63f717f62e40e90f6f0b916fed2a7e1bd4e283b44b46bab5d543"
+    }
+]

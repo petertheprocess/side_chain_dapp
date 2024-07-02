@@ -13,7 +13,7 @@ error Locked();
 contract BridgePool {
     using SafeERC20 for IERC20;
 
-    uint256 public constant LOCK_PERIOD = 1 days;
+    uint256 public constant LOCK_PERIOD = 20 seconds;
     uint256 public constant MINIMUM_STAKE_AMOUNT = 10 ether;
     uint256 public constant BRIDGE_FEE_PERCENTAGE = 5;
     uint256 public constant HUNDRED = 100;
@@ -28,13 +28,13 @@ contract BridgePool {
     mapping(uint256 => bool) public executedDeposits;
 
     event Deposit(
-        uint256 indexed depostID,
+        uint256 indexed depositId,
         address indexed sender,
         address indexed receiver,
         uint256 amount
     );
     event ExecuteBridge(
-        uint256 indexed depositID,
+        uint256 indexed depositId,
         address indexed node,
         address indexed receiver,
         uint256 amount
@@ -67,7 +67,7 @@ contract BridgePool {
     function executeBridge(
         uint256 originChainDepositID,
         address receiver,
-        uint256 amount
+        uint256 amount // amount is in wei
     ) external onlyBridgeNode {
         if (executedDeposits[originChainDepositID]) {
             revert AlreadyExecuted();

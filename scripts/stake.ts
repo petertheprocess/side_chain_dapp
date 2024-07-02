@@ -9,8 +9,12 @@ dotenv.config();
 const SIDE_RPC_URL = process.env.SIDE_RPC_URL;
 const UZHETH_RPC_URL = process.env.UZHETH_RPC_URL;
 
-const SIDE_PRIVATE_KEY = process.env.SIDE_PRIVATE_KEY;
-const UZHETH_PRIVATE_KEY = process.env.UZHETH_PRIVATE_KEY;
+type TokenHolder = {
+  address: string;
+  privateKey: string;
+};
+
+const stakeAmount = "10000";
 
 async function main() {
   const deployedContracts = readFileSync("deployed-contracts.json", "utf8");
@@ -25,57 +29,67 @@ async function main() {
   const bridgeTokenAddressUZHETH =
     deployedContractsJson["UZHETH"]["bridgeToken"];
 
-  let httpProviderSIDE = new ethers.providers.JsonRpcProvider(
-    SIDE_RPC_URL
-  );
-  let walletSIDE = new ethers.Wallet(
-    SIDE_PRIVATE_KEY!,
-    httpProviderSIDE
-  );
-  let httpProviderUZHETH = new ethers.providers.JsonRpcProvider(UZHETH_RPC_URL);
-  let walletUZHETH = new ethers.Wallet(UZHETH_PRIVATE_KEY!, httpProviderUZHETH);
+  const tokenHolders = JSON.parse(readFileSync("token_holders.json", "utf8"));
 
-  const bridgeTokenSIDE = new ethers.Contract(
-    bridgeTokenAddressSIDE,
-    BridgeTokenABI,
-    httpProviderSIDE
-  );
-  const bridgePoolSIDE = new ethers.Contract(
-    bridgePoolAddressSIDE,
-    BridgePoolABI,
-    httpProviderSIDE
-  );
-  const bridgeTokenUZHETH = new ethers.Contract(
-    bridgeTokenAddressUZHETH,
-    BridgeTokenABI,
-    httpProviderUZHETH
-  );
-  const bridgeContractUZHETH = new ethers.Contract(
-    bridgePoolAddressUZHETH,
-    BridgePoolABI,
-    httpProviderUZHETH
-  );
+  tokenHolders.forEach(async (holder: TokenHolder) => {
+    if (!holder.address || !holder.privateKey) {
+      throw new Error("Invalid token holder object");
+    }
 
-  const approveSIDETx = await bridgeTokenSIDE
-    .connect(walletSIDE)
-    .approve(bridgePoolSIDE.address, ethers.utils.parseEther("10"));
-  await approveSIDETx.wait();
+    let httpProviderSIDE = new ethers.providers.JsonRpcProvider(
+      SIDE_RPC_URL
+    );
+    let walletSIDE = new ethers.Wallet(
+      holder.privateKey,
+      httpProviderSIDE
+    );
+    let httpProviderUZHETH = new ethers.providers.JsonRpcProvider(UZHETH_RPC_URL);
+    let walletUZHETH = new ethers.Wallet(holder.privateKey, httpProviderUZHETH);
 
-  const stakeSIDETx = await bridgePoolSIDE
-    .connect(walletSIDE)
-    .stake(ethers.utils.parseEther("10"));
-  await stakeSIDETx.wait();
+    const bridgeTokenSIDE = new ethers.Contract(
+      bridgeTokenAddressSIDE,
+      BridgeTokenABI,
+      httpProviderSIDE
+    );
+    const bridgePoolSIDE = new ethers.Contract(
+      bridgePoolAddressSIDE,
+      BridgePoolABI,
+      httpProviderSIDE
+    );
+    const bridgeTokenUZHETH = new ethers.Contract(
+      bridgeTokenAddressUZHETH,
+      BridgeTokenABI,
+      httpProviderUZHETH
+    );
+    const bridgeContractUZHETH = new ethers.Contract(
+      bridgePoolAddressUZHETH,
+      BridgePoolABI,
+      httpProviderUZHETH
+    );
 
-  const approveUZHETHTx = await bridgeTokenUZHETH
-    .connect(walletUZHETH)
-    .approve(bridgeContractUZHETH.address, ethers.utils.parseEther("10"));
-  await approveUZHETHTx.wait();
+    // Approve and stake tokens
+    const approveSIDETx = await bridgeTokenSIDE
+      .connect(walletSIDE)
+      .approve(bridgePoolSIDE.address, ethers.utils.parseEther(stakeAmount), { gasLimit: 1000000 });
+    await approveSIDETx.wait();
 
-  const stakeUZHETHTx = await bridgeContractUZHETH
-    .connect(walletUZHETH)
-    .stake(ethers.utils.parseEther("10"));
-  await stakeUZHETHTx.wait();
-}
+    const stakeSIDETx = await bridgePoolSIDE
+      .connect(walletSIDE)
+      .stake(ethers.utils.parseEther(stakeAmount), { gasLimit: 1000000 });
+    await stakeSIDETx.wait();
+
+    const approveUZHETHTx = await bridgeTokenUZHETH
+      .connect(walletUZHETH)
+      .approve(bridgeContractUZHETH.address, ethers.utils.parseEther(stakeAmount), { gasLimit: 1000000 });
+    await approveUZHETHTx.wait();
+
+    const stakeUZHETHTx = await bridgeContractUZHETH
+      .connect(walletUZHETH)
+      .stake(ethers.utils.parseEther(stakeAmount), { gasLimit: 1000000 });
+    await stakeUZHETHTx.wait();
+    console.log(`Successfully staked tokens for ${holder.address} in both networks`);
+  });
+};
 
 main().catch((error) => {
   console.error(error);

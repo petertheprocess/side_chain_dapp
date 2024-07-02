@@ -46,7 +46,7 @@ async function main() {
     
     // call deposit function on SIDE blockchain depositing 10 tokens to
     // UZHETH blockchain address: 0x39A9C8B6E6DCd15F3982fE4f24a434BFcd4B6931
-    const targetAddress = "0x39A9C8B6E6DCd15F3982fE4f24a434BFcd4B6931";
+    const targetAddress = "0x391ABF65aE48F2A3dc358eBf925B84a02aac7a17";
     // check the balance of the wallet before depositing
     const balance = await httpProviderSIDE.getBalance(walletSIDE.address);
     console.log(`Balance of the wallet ${walletSIDE.address} before depositing: ${balance.toString()}`)

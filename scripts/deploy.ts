@@ -6,7 +6,7 @@ async function main() {
   const networkName = hre.network.name;
   const jsonName = `deployed-contracts.json`
   const tokenHoldersJson = JSON.parse(readFileSync("token_holders.json", "utf8"));
-  const tokenHolders = tokenHoldersJson[networkName];
+  const tokenHolders = tokenHoldersJson.map((holder) => holder.address);
   console.log("Token holders for network: " + networkName);
   console.log(tokenHolders);
   console.log("Deploying contracts to network: " + networkName + " ...");
