@@ -112,3 +112,12 @@ npx hardhat run ./scripts/bridge.ts
 ```bash
 npx hardhat run scripts/deployGame.js --network SIDE
 ```
+
+7. Run the Client
+copy the atifacts to the client folder
+```bash
+cp -r artifacts client/src/
+```
+Fill up the client/constents.js with the contract addresses and RPC urls 
+
+Run the react app following the instructions in the client folder

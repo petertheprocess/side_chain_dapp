@@ -1,8 +1,63 @@
+.form-div{
+    display: flex;
+    flex-direction: row;
+    align-items: space-between;
+    justify-content: space-between;
+}
 .bridge-form{
+    padding-left: 5vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 50px;
     margin-bottom: 50px;
+    width: fit-content;
+    label{
+        margin-top: 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 20vw;
+        span{
+            width: 25%;
+        }
+        input{
+            width: 75%;
+            
+        }
+    }
+    button{
+        margin-top: 10px;
+        width: 20vw;
+    }
+}
+
+.dice-game{
+    padding-right: 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: fit-content;
+    label{
+        margin-top: 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 50vw;
+        span{
+            width: 25%;
+        }
+        input{
+            width: 75%;
+        }
+        button{
+            width: 20vw;
+        }
+    }
 }

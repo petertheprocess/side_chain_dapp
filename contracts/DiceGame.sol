@@ -31,6 +31,7 @@ contract DiceGame {
     // Event to log deposit made
     event LogDepositMade(address indexed accountAddress, uint256 amount);
     event LogWithdrawMade(address indexed accountAddress, uint256 amount);
+    event LogRollDice(address indexed accountAddress, uint8 dice);
 
     constructor(address t_tokenAddress) {
         _token = IERC20(t_tokenAddress);
@@ -49,14 +50,14 @@ contract DiceGame {
         bool isLogged;
     }
 
-    function isWin() private view returns (bool) {
+    function dice() private view returns (uint8) {
         // Generate pseudo-random number based on block's properties and timeRestriction
         uint256 _rand = (uint256(
             keccak256(
                 abi.encodePacked(blockhash(block.number - 1), block.timestamp)
             )
         ) % 6) + 1;
-        return (_rand % 6) + 1 >= 4;
+        return uint8(_rand);
     }
 
     function login(string memory t_name, uint8 t_age) public {
@@ -96,14 +97,15 @@ contract DiceGame {
         // require(timeRestriction <= block.timestamp, "time error");
 
         timeRestriction = block.timestamp + 2;
-
-        if (isWin()) {
+        uint8 _dice = dice();
+        if (_dice>=4) {
             players[msg.sender].balance += players[msg.sender].bet;
             house.balance -= players[msg.sender].bet;
         } else {
             players[msg.sender].balance -= players[msg.sender].bet;
             house.balance += players[msg.sender].bet;
         }
+        emit LogRollDice(msg.sender, _dice);
     }
 
     function putBet(uint256 t_betAsWei) public {
@@ -111,11 +113,6 @@ contract DiceGame {
         require(
             players[msg.sender].isLogged && msg.sender != house.houseAddress,
             "should be logged in player"
-        );
-        // Require bet to be within limits
-        require(
-            t_betAsWei <= 100000000000000000 && t_betAsWei > 0,
-            "invalid amount"
         );
         // Require sufficient balance for the bet
         require(

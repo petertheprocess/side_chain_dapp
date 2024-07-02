@@ -42,6 +42,7 @@ async function main() {
     JSON.stringify(deployedContractsJson, null, 2),
     { flag: "w", encoding: "utf8" }
   );
+  
 }
 
 main().catch((error) => {
